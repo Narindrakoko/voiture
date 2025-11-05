@@ -1,0 +1,25 @@
+{
+  "name": "gestionvehicule",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "backend": "nodemon server/server.js --watch server",
+    "electron": "wait-on http://localhost:3000 && npx electron .",
+    "start": "concurrently -k \"npm run backend\" \"npx electron .\"",
+    "build": "electron-builder",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "electron": "^39.1.0",
+    "nodemon": "^3.1.10",
+    "wait-on": "^9.0.1"
+  }
+}
