@@ -1,6 +1,6 @@
 export function Affectation() {
     return `
-      <main class="affectations">
+      <main class="affectations acceuil">
         <h2>Liste des affectations</h2>
         <table class="data-table">
           <thead>

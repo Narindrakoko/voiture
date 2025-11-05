@@ -1,6 +1,6 @@
 export function Historique() {
     return `
-      <main class="historiques">
+      <main class="historiques acceuil">
         <h2>Historique des actions</h2>
         <table class="data-table">
           <thead>

@@ -1,6 +1,6 @@
 export function Chauffeur() {
     return `
-      <main class="chauffeurs">
+      <main class="chauffeurs acceuil">
         <h2>Liste des chauffeurs</h2>
         <table class="data-table">
           <thead>

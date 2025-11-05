@@ -1,6 +1,6 @@
 export function Fournisseur() {
     return `
-      <main class="fournisseurs">
+      <main class="fournisseurs acceuil">
         <h2>Liste des fournisseurs</h2>
         <table class="data-table">
           <thead>

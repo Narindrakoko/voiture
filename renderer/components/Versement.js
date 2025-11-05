@@ -1,6 +1,6 @@
 export function Versement() {
     return `
-      <main class="versements">
+      <main class="versements acceuil">
         <h2>Liste des versements</h2>
         <table class="data-table">
           <thead>
