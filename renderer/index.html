@@ -2,11 +2,27 @@
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Gestion Véhicule</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+      // Create a promise to track Chart.js loading
+      window.chartJsLoaded = new Promise((resolve) => {
+        window.onChartJsLoaded = resolve;
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" 
+            onload="window.onChartJsLoaded()" 
+            onerror="console.error('Failed to load Chart.js')"></script>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <div class="loading-screen">
+        <div class="spinner"></div>
+        <p>Chargement...</p>
+      </div>
+    </div>
     <script type="module" src="renderer.js"></script>
   </body>
 </html>
