@@ -56,7 +56,7 @@ const initApp = async () => {
 
       // Initialize components
       initMobileNavigation();
-      
+
       // Initialize charts if they exist
       if (typeof Chart !== 'undefined' && content.includes('chart')) {
         requestAnimationFrame(() => {

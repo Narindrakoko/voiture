@@ -7,7 +7,7 @@ export function Header() {
         </button>
         <h1>GestioFleet</h1>
       </div>
-      
+
       <div class="header-right">
         <div class="header-actions">
           <button class="btn-icon" id="btnNotifications" title="Notifications">
