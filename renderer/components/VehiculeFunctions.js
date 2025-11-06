@@ -1,3 +1,26 @@
+// Variable pour suivre l'état du formulaire
+let isFormOpen = false;
+
+// Fonction pour basculer l'affichage du formulaire
+function toggleForm() {
+  const formContainer = document.getElementById('formContainer');
+  const toggleIcon = document.getElementById('toggleFormIcon');
+  const toggleText = document.getElementById('toggleFormText');
+
+  isFormOpen = !isFormOpen;
+
+  if (isFormOpen) {
+    formContainer.style.display = 'block';
+    toggleIcon.className = 'fas fa-minus';
+    toggleText.textContent = 'Fermer le formulaire';
+  } else {
+    formContainer.style.display = 'none';
+    toggleIcon.className = 'fas fa-plus';
+    toggleText.textContent = 'Ajouter un véhicule';
+    resetForm(); // Réinitialiser le formulaire quand on le ferme
+  }
+}
+
 // Fonction pour charger les véhicules
 async function loadVehicules() {
   try {
@@ -70,6 +93,11 @@ async function editVehicule(id) {
     const response = await fetch(`http://localhost:3000/api/vehicules/${id}`);
     const vehicule = await response.json();
 
+    // Ouvrir le formulaire si fermé
+    if (!isFormOpen) {
+      toggleForm();
+    }
+
     document.getElementById('vehiculeId').value = vehicule.id;
     document.getElementById('immatriculation').value = vehicule.immatriculation;
     document.getElementById('marque').value = vehicule.marque;
@@ -136,7 +164,12 @@ function initVehicule() {
   // Event listeners
   document.getElementById('vehiculeForm').addEventListener('submit', submitVehiculeForm);
   document.getElementById('resetForm').addEventListener('click', resetForm);
-  document.getElementById('closeForm').addEventListener('click', resetForm);
+  document.getElementById('closeForm').addEventListener('click', () => {
+    if (isFormOpen) {
+      toggleForm();
+    }
+  });
+  document.getElementById('btnToggleForm').addEventListener('click', toggleForm);
 
   // Recherche de véhicules
   document.getElementById('searchVehicule').addEventListener('input', function(e) {

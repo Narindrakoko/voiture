@@ -1,7 +1,7 @@
 import { Acceuil } from './components/Acceuil.js';
 import { Affectation } from './components/Affectation.js';
 import { Chauffeur } from './components/Chauffeur.js';
-import { ChauffeurForm } from './components/ChauffeurForm.js';
+// import { ChauffeurForm } from './components/ChauffeurForm.js';
 import { Dashboard } from './components/dashboard.js';
 import { Fournisseur } from './components/Fournisseur.js';
 import { Header } from './components/header.js';
@@ -17,7 +17,7 @@ window.Dashboard = Dashboard;
 window.Vehicule = Vehicule;
 window.Affectation = Affectation;
 window.Chauffeur = Chauffeur;
-window.ChauffeurForm = ChauffeurForm;
+// window.ChauffeurForm = ChauffeurForm;
 window.Fournisseur = Fournisseur;
 window.Historique = Historique;
 window.Versement = Versement;
@@ -99,13 +99,7 @@ document.addEventListener('DOMContentLoaded', initApp);
 
 // Gestion dynamique
 document.addEventListener('click', (e) => {
-  // Trouver le bouton le plus proche, que ce soit le clic sur le bouton lui-même ou sur l'icône
-  const button = e.target.closest('#btnAjouterChauffeur');
-  if (button) {
-    console.log('Bouton Ajouter Chauffeur cliqué (via délégation)');
-    render(ChauffeurForm());
-    return;
-  }
+  // Le bouton Ajouter Chauffeur est maintenant dans le composant Chauffeur lui-même
 
   switch (e.target.id) {
     case 'btn-dashboard':

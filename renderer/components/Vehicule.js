@@ -14,15 +14,15 @@ export function Vehicule() {
             <i class="fas fa-search"></i>
             <input type="text" id="searchVehicule" placeholder="Rechercher un véhicule...">
           </div>
-          <button id="btnAddVehicule" class="btn-primary">
-            <i class="fas fa-plus"></i>
-            Ajouter un véhicule
+          <button id="btnToggleForm" class="btn-primary">
+            <i class="fas fa-plus" id="toggleFormIcon"></i>
+            <span id="toggleFormText">Ajouter un véhicule</span>
           </button>
         </div>
       </div>
 
       <!-- Formulaire d'ajout/modification -->
-      <div class="form-container">
+      <div class="form-container" id="formContainer" style="display: none;">
         <form id="vehiculeForm" class="form-vehicule">
           <div class="form-header">
             <h3 id="formTitle">Ajouter un véhicule</h3>
@@ -122,6 +122,7 @@ export function Vehicule() {
           box-shadow: var(--shadow);
           margin-bottom: 30px;
           overflow: hidden;
+          transition: all 0.3s ease;
         }
 
         .form-header {
