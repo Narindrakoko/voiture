@@ -5,6 +5,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 const vehiculeController = require('./controllers/vehiculeController');
 const chauffeurController = require('./controllers/chauffeurController');
+const affectationController = require('./controllers/affectationController');
+
+// Importer les associations pour initialiser les relations
+require('./models/associations');
 
 // Configuration CORS
 app.use((req, res, next) => {
@@ -44,6 +48,17 @@ app.get('/api/chauffeurs/:id', chauffeurController.getChauffeurById);
 app.post('/api/chauffeurs', chauffeurController.createChauffeur);
 app.put('/api/chauffeurs/:id', chauffeurController.updateChauffeur);
 app.delete('/api/chauffeurs/:id', chauffeurController.deleteChauffeur);
+
+// Routes pour la gestion des affectations
+app.get('/api/affectations', affectationController.getAllAffectations);
+app.get('/api/affectations/:id', affectationController.getAffectationById);
+app.post('/api/affectations', affectationController.createAffectation);
+app.put('/api/affectations/:id', affectationController.updateAffectation);
+app.delete('/api/affectations/:id', affectationController.deleteAffectation);
+app.get('/api/affectations/vehicule/:vehiculeId', affectationController.getAffectationsByVehicule);
+app.get('/api/affectations/chauffeur/:chauffeurId', affectationController.getAffectationsByChauffeur);
+
+
 
 app.listen(port, () => {
   console.log(`API server listening at http://localhost:${port}`);

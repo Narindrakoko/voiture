@@ -1,4 +1,10 @@
+import { initAffectation } from './AffectationFunctions.js';
+
 export function Affectation() {
+  setTimeout(() => {
+    initAffectation();
+  }, 0);
+
   return `
     <main class="affectations fadeIn">
       <div class="header-actions">
@@ -8,22 +14,24 @@ export function Affectation() {
             <i class="fas fa-search"></i>
             <input type="text" id="searchAffectation" placeholder="Rechercher une affectation...">
           </div>
-          <button id="btnAjouterAffectation" class="btn-primary">
-            <i class="fas fa-plus"></i>
-            Nouvelle affectation
+          <button id="btnToggleForm" class="btn-primary">
+            <i class="fas fa-plus" id="toggleFormIcon"></i>
+            <span id="toggleFormText">Nouvelle affectation</span>
           </button>
         </div>
       </div>
 
       <!-- Formulaire d'affectation -->
-      <div class="form-container">
+      <div class="form-container" id="formContainer" style="display: none;">
         <form id="affectationForm" class="form-affectation">
           <div class="form-header">
-            <h3><i class="fas fa-clipboard-list"></i> Créer une affectation</h3>
+            <h3 id="formTitle"><i class="fas fa-clipboard-list"></i> Créer une affectation</h3>
             <button type="button" class="btn-icon" id="closeForm">
               <i class="fas fa-times"></i>
             </button>
           </div>
+
+          <input type="hidden" id="affectationId">
 
           <div class="form-grid">
             <div class="form-group">
@@ -64,7 +72,7 @@ export function Affectation() {
           </div>
 
           <div class="form-actions">
-            <button type="submit" class="btn-primary">
+            <button type="submit" id="submitAffectation" class="btn-primary">
               <i class="fas fa-save"></i>
               Enregistrer
             </button>
@@ -91,71 +99,12 @@ export function Affectation() {
             </tr>
           </thead>
           <tbody id="affectationTableBody">
-            <tr>
-              <td>1</td>
-              <td>
-                <div class="vehicle-info">
-                  <i class="fas fa-car"></i>
-                  <span>Peugeot 208</span>
-                </div>
-              </td>
-              <td>
-                <div class="driver-info">
-                  <i class="fas fa-user-circle"></i>
-                  <span>Rasoa Jean</span>
-                </div>
-              </td>
-              <td>2025-02-10 08:00</td>
-              <td>2025-02-20 18:00</td>
-              <td><span class="badge badge-success">Terminée</span></td>
-              <td>
-                <div class="action-buttons">
-                  <button class="action-button view" title="Voir les détails">
-                    <i class="fas fa-eye"></i>
-                  </button>
-                  <button class="action-button edit" title="Modifier">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button class="action-button delete" title="Supprimer">
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>
-                <div class="vehicle-info">
-                  <i class="fas fa-car"></i>
-                  <span>Toyota Corolla</span>
-                </div>
-              </td>
-              <td>
-                <div class="driver-info">
-                  <i class="fas fa-user-circle"></i>
-                  <span>Rakoto Marie</span>
-                </div>
-              </td>
-              <td>2025-02-15 09:00</td>
-              <td>2025-02-25 17:00</td>
-              <td><span class="badge badge-warning">En cours</span></td>
-              <td>
-                <div class="action-buttons">
-                  <button class="action-button view" title="Voir les détails">
-                    <i class="fas fa-eye"></i>
-                  </button>
-                  <button class="action-button edit" title="Modifier">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button class="action-button delete" title="Supprimer">
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
           </tbody>
         </table>
       </div>
+
+      <!-- Notification -->
+      <div id="notification" class="notification"></div>
 
       <style>
         .affectations {
@@ -231,10 +180,6 @@ export function Affectation() {
           transition: all 0.3s ease;
         }
 
-        .action-button.view {
-          color: var(--primary-color);
-        }
-
         .action-button.edit {
           color: #ffc107;
         }
@@ -266,6 +211,23 @@ export function Affectation() {
         .badge-warning {
           background-color: rgba(255, 193, 7, 0.1);
           color: #ffc107;
+        }
+
+        .badge-secondary {
+          background-color: rgba(108, 117, 125, 0.1);
+          color: #6c757d;
+        }
+
+        .empty-state {
+          text-align: center;
+          padding: 40px;
+          color: #666;
+        }
+
+        .empty-state i {
+          font-size: 3rem;
+          color: var(--border-color);
+          margin-bottom: 15px;
         }
 
         @media (max-width: 768px) {
@@ -300,82 +262,6 @@ export function Affectation() {
           }
         }
       </style>
-
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
-          initAffectationEvents();
-          loadVehicules();
-          loadChauffeurs();
-        });
-
-        function initAffectationEvents() {
-          const searchInput = document.getElementById('searchAffectation');
-          if (searchInput) {
-            searchInput.addEventListener('input', function(e) {
-              const searchTerm = e.target.value.toLowerCase();
-              const tbody = document.getElementById('affectationTableBody');
-              Array.from(tbody.getElementsByTagName('tr')).forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
-              });
-            });
-          }
-
-          const form = document.getElementById('affectationForm');
-          if (form) {
-            form.addEventListener('submit', function(e) {
-              e.preventDefault();
-              // TODO: Implémenter la logique de soumission
-            });
-          }
-
-          const resetBtn = document.getElementById('resetForm');
-          if (resetBtn) {
-            resetBtn.addEventListener('click', function() {
-              form.reset();
-            });
-          }
-
-          const closeBtn = document.getElementById('closeForm');
-          if (closeBtn) {
-            closeBtn.addEventListener('click', function() {
-              form.reset();
-            });
-          }
-        }
-
-        async function loadVehicules() {
-          try {
-            const response = await fetch('http://localhost:3000/api/vehicules');
-            const vehicules = await response.json();
-            const select = document.getElementById('vehicule');
-            vehicules.forEach(v => {
-              const option = document.createElement('option');
-              option.value = v.id;
-              option.textContent = \`\${v.marque} \${v.modele} (\${v.immatriculation})\`;
-              select.appendChild(option);
-            });
-          } catch (error) {
-            console.error('Erreur:', error);
-          }
-        }
-
-        async function loadChauffeurs() {
-          try {
-            const response = await fetch('http://localhost:3000/api/chauffeurs');
-            const chauffeurs = await response.json();
-            const select = document.getElementById('chauffeur');
-            chauffeurs.forEach(c => {
-              const option = document.createElement('option');
-              option.value = c.id;
-              option.textContent = \`\${c.nom} \${c.prenom}\`;
-              select.appendChild(option);
-            });
-          } catch (error) {
-            console.error('Erreur:', error);
-          }
-        }
-      </script>
     </main>
   `;
 }
