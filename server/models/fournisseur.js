@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database');
 
-const Chauffeur = sequelize.define('Chauffeur', {
+const Fournisseur = sequelize.define('Fournisseur', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -9,11 +9,19 @@ const Chauffeur = sequelize.define('Chauffeur', {
   },
   nom: {
     type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
+  type: {
+    type: DataTypes.ENUM('carburant', 'pieces', 'services'),
     allowNull: false
   },
-  prenom: {
+  contact: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    validate: {
+      is: /^[0-9]{10}$/
+    }
   },
   email: {
     type: DataTypes.STRING,
@@ -23,26 +31,21 @@ const Chauffeur = sequelize.define('Chauffeur', {
       isEmail: true
     }
   },
-  telephone: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
   adresse: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false
   },
-  dateEmbauche: {
-    type: DataTypes.DATE,
-    allowNull: false
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: true
   },
-  numeroPermis: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
+  statut: {
+    type: DataTypes.ENUM('actif', 'inactif'),
+    defaultValue: 'actif'
   }
 });
 
 // Synchroniser le modèle avec la base de données
 sequelize.sync();
 
-module.exports = Chauffeur;
+module.exports = Fournisseur;

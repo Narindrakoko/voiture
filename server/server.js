@@ -6,9 +6,21 @@ const port = process.env.PORT || 3000;
 const vehiculeController = require('./controllers/vehiculeController');
 const chauffeurController = require('./controllers/chauffeurController');
 const affectationController = require('./controllers/affectationController');
+const fournisseurController = require('./controllers/fournisseurController');
+const versementController = require('./controllers/versementController');
+
+// Import du seeding
 
 // Importer les associations pour initialiser les relations
 require('./models/associations');
+
+// Synchroniser la base de données
+const sequelize = require('./database');
+sequelize.sync({ force: false }).then(() => {
+  console.log('Base de données synchronisée');
+}).catch(err => {
+  console.error('Erreur lors de la synchronisation de la base de données:', err);
+});
 
 // Configuration CORS
 app.use((req, res, next) => {
@@ -58,8 +70,27 @@ app.delete('/api/affectations/:id', affectationController.deleteAffectation);
 app.get('/api/affectations/vehicule/:vehiculeId', affectationController.getAffectationsByVehicule);
 app.get('/api/affectations/chauffeur/:chauffeurId', affectationController.getAffectationsByChauffeur);
 
+// Routes pour la gestion des fournisseurs
+app.get('/api/fournisseurs', fournisseurController.getAllFournisseurs);
+app.get('/api/fournisseurs/:id', fournisseurController.getFournisseurById);
+app.post('/api/fournisseurs', fournisseurController.createFournisseur);
+app.put('/api/fournisseurs/:id', fournisseurController.updateFournisseur);
+app.delete('/api/fournisseurs/:id', fournisseurController.deleteFournisseur);
+
+// Routes pour la gestion des versements
+app.get('/api/versements', versementController.getAllVersements);
+app.get('/api/versements/:id', versementController.getVersementById);
+app.post('/api/versements', versementController.createVersement);
+app.put('/api/versements/:id', versementController.updateVersement);
+app.delete('/api/versements/:id', versementController.deleteVersement);
+app.get('/api/versements/vehicule/:vehiculeId', versementController.getVersementsByVehicule);
+app.get('/api/versements/chauffeur/:chauffeurId', versementController.getVersementsByChauffeur);
+app.get('/api/versements/stats', versementController.getVersementsStats);
 
 
-app.listen(port, () => {
+
+app.listen(port, async () => {
   console.log(`API server listening at http://localhost:${port}`);
+
+
 });

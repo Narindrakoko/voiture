@@ -1,4 +1,10 @@
+import { initVersement } from './VersementFunctions.js';
+
 export function Versement() {
+  setTimeout(() => {
+    initVersement();
+  }, 0);
+
   return `
     <main class="versements fadeIn">
       <div class="header-actions">
@@ -25,53 +31,53 @@ export function Versement() {
 
       <!-- Statistiques rapides -->
       <div class="stats-overview">
-        <div class="stat-card">
+        <div class="stat-card" id="stat-total">
           <div class="stat-icon">
             <i class="fas fa-money-bill-wave"></i>
           </div>
           <div class="stat-info">
             <h4>Total Versements</h4>
-            <p class="stat-value">1,250,000 Ar</p>
+            <p class="stat-value" id="stat-total-value">0 Ar</p>
             <p class="stat-label">Ce mois</p>
           </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card" id="stat-carburant">
           <div class="stat-icon">
             <i class="fas fa-gas-pump"></i>
           </div>
           <div class="stat-info">
             <h4>Carburant</h4>
-            <p class="stat-value">450,000 Ar</p>
+            <p class="stat-value" id="stat-carburant-value">0 Ar</p>
             <p class="stat-label">Ce mois</p>
           </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card" id="stat-maintenance">
           <div class="stat-icon">
             <i class="fas fa-tools"></i>
           </div>
           <div class="stat-info">
             <h4>Maintenance</h4>
-            <p class="stat-value">350,000 Ar</p>
+            <p class="stat-value" id="stat-maintenance-value">0 Ar</p>
             <p class="stat-label">Ce mois</p>
           </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card" id="stat-reparation">
           <div class="stat-icon">
             <i class="fas fa-wrench"></i>
           </div>
           <div class="stat-info">
             <h4>Réparations</h4>
-            <p class="stat-value">450,000 Ar</p>
+            <p class="stat-value" id="stat-reparation-value">0 Ar</p>
             <p class="stat-label">Ce mois</p>
           </div>
         </div>
       </div>
 
       <!-- Formulaire de versement -->
-      <div class="form-container">
+      <div class="form-container" style="display: none;">
         <form id="versementForm" class="form-versement">
           <div class="form-header">
             <h3><i class="fas fa-file-invoice-dollar"></i> Nouveau versement</h3>
@@ -80,13 +86,15 @@ export function Versement() {
             </button>
           </div>
 
+          <input type="hidden" id="versementId">
+
           <div class="form-grid">
             <div class="form-group">
               <label for="montant">
                 <i class="fas fa-money-bill"></i>
                 Montant:
               </label>
-              <input type="number" id="montant" required class="form-control" min="0">
+              <input type="number" id="montant" required class="form-control" min="0" step="0.01">
             </div>
 
             <div class="form-group">
@@ -120,6 +128,14 @@ export function Versement() {
               <select id="chauffeur" required class="form-control">
                 <option value="">Sélectionner le chauffeur</option>
               </select>
+            </div>
+
+            <div class="form-group">
+              <label for="dateVersement">
+                <i class="fas fa-calendar-alt"></i>
+                Date:
+              </label>
+              <input type="date" id="dateVersement" class="form-control" value="${new Date().toISOString().split('T')[0]}">
             </div>
 
             <div class="form-group full-width">
@@ -159,45 +175,12 @@ export function Versement() {
             </tr>
           </thead>
           <tbody id="versementTableBody">
-            <tr>
-              <td>1</td>
-              <td>
-                <div class="amount">
-                  <span>250,000</span>
-                  <small>Ar</small>
-                </div>
-              </td>
-              <td>2025-03-05</td>
-              <td><span class="badge badge-primary">Carburant</span></td>
-              <td>
-                <div class="vehicle-info">
-                  <i class="fas fa-car"></i>
-                  <span>Peugeot 208</span>
-                </div>
-              </td>
-              <td>
-                <div class="driver-info">
-                  <i class="fas fa-user-circle"></i>
-                  <span>Rasoa Jean</span>
-                </div>
-              </td>
-              <td>
-                <div class="action-buttons">
-                  <button class="action-button view" title="Voir les détails">
-                    <i class="fas fa-eye"></i>
-                  </button>
-                  <button class="action-button edit" title="Modifier">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button class="action-button delete" title="Supprimer">
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
           </tbody>
         </table>
       </div>
+
+      <!-- Notification -->
+      <div id="notification" class="notification"></div>
 
       <style>
         .versements {
@@ -311,6 +294,16 @@ export function Versement() {
           color: var(--primary-color);
         }
 
+        .badge-warning {
+          background-color: rgba(255, 193, 7, 0.1);
+          color: #856404;
+        }
+
+        .badge-danger {
+          background-color: rgba(220, 53, 69, 0.1);
+          color: #721c24;
+        }
+
         .form-container {
           background: white;
           border-radius: var(--radius);
@@ -345,6 +338,34 @@ export function Versement() {
         textarea.form-control {
           resize: vertical;
           min-height: 100px;
+        }
+
+        .action-buttons {
+          display: flex;
+          gap: 8px;
+        }
+
+        .action-button {
+          background: none;
+          border: none;
+          color: #666;
+          cursor: pointer;
+          padding: 5px;
+          border-radius: 4px;
+          transition: all 0.3s ease;
+        }
+
+        .action-button:hover {
+          background: var(--light-bg);
+          color: var(--primary-color);
+        }
+
+        .action-button.edit:hover {
+          color: #ffc107;
+        }
+
+        .action-button.delete:hover {
+          color: #dc3545;
         }
 
         @media (max-width: 768px) {
@@ -390,97 +411,6 @@ export function Versement() {
           }
         }
       </style>
-
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
-          initVersementEvents();
-          loadVehicules();
-          loadChauffeurs();
-        });
-
-        function initVersementEvents() {
-          const searchInput = document.getElementById('searchVersement');
-          if (searchInput) {
-            searchInput.addEventListener('input', function(e) {
-              filterVersements();
-            });
-          }
-
-          const filterType = document.getElementById('filterType');
-          if (filterType) {
-            filterType.addEventListener('change', function() {
-              filterVersements();
-            });
-          }
-
-          const form = document.getElementById('versementForm');
-          if (form) {
-            form.addEventListener('submit', function(e) {
-              e.preventDefault();
-              // TODO: Implémenter la logique de soumission
-            });
-          }
-
-          const resetBtn = document.getElementById('resetForm');
-          if (resetBtn) {
-            resetBtn.addEventListener('click', function() {
-              form.reset();
-            });
-          }
-
-          const closeBtn = document.getElementById('closeForm');
-          if (closeBtn) {
-            closeBtn.addEventListener('click', function() {
-              form.reset();
-            });
-          }
-        }
-
-        function filterVersements() {
-          const searchTerm = document.getElementById('searchVersement').value.toLowerCase();
-          const type = document.getElementById('filterType').value.toLowerCase();
-          const tbody = document.getElementById('versementTableBody');
-
-          Array.from(tbody.getElementsByTagName('tr')).forEach(row => {
-            const text = row.textContent.toLowerCase();
-            const typeMatch = type === '' || row.querySelector('.badge').textContent.toLowerCase() === type;
-            const searchMatch = text.includes(searchTerm);
-            row.style.display = (typeMatch && searchMatch) ? '' : 'none';
-          });
-        }
-
-        async function loadVehicules() {
-          try {
-            const response = await fetch('http://localhost:3000/api/vehicules');
-            const vehicules = await response.json();
-            const select = document.getElementById('vehicule');
-            vehicules.forEach(v => {
-              const option = document.createElement('option');
-              option.value = v.id;
-              option.textContent = \`\${v.marque} \${v.modele} (\${v.immatriculation})\`;
-              select.appendChild(option);
-            });
-          } catch (error) {
-            console.error('Erreur:', error);
-          }
-        }
-
-        async function loadChauffeurs() {
-          try {
-            const response = await fetch('http://localhost:3000/api/chauffeurs');
-            const chauffeurs = await response.json();
-            const select = document.getElementById('chauffeur');
-            chauffeurs.forEach(c => {
-              const option = document.createElement('option');
-              option.value = c.id;
-              option.textContent = \`\${c.nom} \${c.prenom}\`;
-              select.appendChild(option);
-            });
-          } catch (error) {
-            console.error('Erreur:', error);
-          }
-        }
-      </script>
     </main>
   `;
 }

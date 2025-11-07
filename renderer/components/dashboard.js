@@ -681,6 +681,10 @@ export function Dashboard() {
             initPeriodSelector();
             initRefreshButton();
             initializeCharts();
+            // Charger les données réelles après l'initialisation
+            if (window.DashboardFunctions) {
+              window.DashboardFunctions.updateDashboardWithRealData();
+            }
           }).catch(error => {
             console.error('Error initializing dashboard:', error);
             const containers = document.querySelectorAll('.chart-container');
@@ -742,12 +746,52 @@ export function Dashboard() {
           }
         }
 
-        function updateDashboardData(period = 'day') {
+        async function updateDashboardData(period = 'month') {
           currentPeriod = period;
           const refreshBtn = document.getElementById('btnRefresh');
           if (refreshBtn) refreshBtn.classList.add('rotating');
 
-          // Simulated data for different periods
+          try {
+            // Charger les données réelles depuis l'API
+            if (window.DashboardFunctions) {
+              const [vehicleUsage, expenses] = await Promise.all([
+                window.DashboardFunctions.getVehicleUsageData(period),
+                window.DashboardFunctions.getExpensesData()
+              ]);
+
+              // Update charts with real data
+              if (charts.vehicleUsage) {
+                charts.vehicleUsage.data.labels = vehicleUsage.labels;
+                charts.vehicleUsage.data.datasets[0].data = vehicleUsage.data;
+                charts.vehicleUsage.update();
+              }
+
+              if (charts.expenses) {
+                charts.expenses.data.labels = expenses.labels;
+                charts.expenses.data.datasets[0].data = expenses.data;
+                charts.expenses.update();
+              }
+
+              // Update stat cards with real data
+              await updateStatCardsWithRealData();
+            } else {
+              // Fallback to simulated data if DashboardFunctions not available
+              updateDashboardDataSimulated(period);
+            }
+          } catch (error) {
+            console.error('Error updating dashboard with real data:', error);
+            // Fallback to simulated data on error
+            updateDashboardDataSimulated(period);
+          }
+
+          // Remove loading state
+          setTimeout(() => {
+            if (refreshBtn) refreshBtn.classList.remove('rotating');
+          }, 500);
+        }
+
+        function updateDashboardDataSimulated(period = 'day') {
+          // Simulated data for different periods (fallback)
           const data = {
             day: {
               vehicleUsage: {
@@ -779,7 +823,7 @@ export function Dashboard() {
             }
           };
 
-          // Update charts with new data
+          // Update charts with simulated data
           try {
             if (charts.vehicleUsage) {
               charts.vehicleUsage.data.labels = data[period].vehicleUsage.labels;
@@ -795,13 +839,51 @@ export function Dashboard() {
             // Update stat cards with animation
             updateStatCards(period);
           } catch (error) {
-            console.error('Error updating charts:', error);
+            console.error('Error updating charts with simulated data:', error);
           }
+        }
 
-          // Remove loading state
-          setTimeout(() => {
-            if (refreshBtn) refreshBtn.classList.remove('rotating');
-          }, 500);
+        async function updateStatCardsWithRealData() {
+          try {
+            if (!window.DashboardFunctions) return;
+
+            const stats = await window.DashboardFunctions.getDashboardStats();
+
+            const cards = document.querySelectorAll('.stat-card');
+            if (cards.length >= 4) {
+              // Véhicules
+              const vehiculeCard = cards[0];
+              const vehiculeValue = vehiculeCard.querySelector('.stat-value');
+              if (vehiculeValue) {
+                animateValue(vehiculeValue, parseFloat(vehiculeValue.textContent.replace(/[^\d.-]/g, '')) || 0, stats.vehicules.total, 500);
+              }
+
+              // Chauffeurs
+              const chauffeurCard = cards[1];
+              const chauffeurValue = chauffeurCard.querySelector('.stat-value');
+              if (chauffeurValue) {
+                animateValue(chauffeurValue, parseFloat(chauffeurValue.textContent.replace(/[^\d.-]/g, '')) || 0, stats.chauffeurs.total, 500);
+              }
+
+              // Affectations
+              const affectationCard = cards[2];
+              const affectationValue = affectationCard.querySelector('.stat-value');
+              if (affectationValue) {
+                animateValue(affectationValue, parseFloat(affectationValue.textContent.replace(/[^\d.-]/g, '')) || 0, stats.affectations.total, 500);
+              }
+
+              // Dépenses
+              const depenseCard = cards[3];
+              const depenseValue = depenseCard.querySelector('.stat-value');
+              if (depenseValue && stats.versements.totalAmount) {
+                const currentValue = parseFloat(depenseValue.textContent.replace(/[^\d.-]/g, '')) || 0;
+                const newValue = Math.round(stats.versements.totalAmount / 1000); // Convertir en milliers
+                animateValue(depenseValue, currentValue, newValue, 500);
+              }
+            }
+          } catch (error) {
+            console.error('Erreur lors de la mise à jour des cartes statistiques:', error);
+          }
         }
 
         function updateStatCards(period) {

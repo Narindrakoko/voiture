@@ -1,11 +1,19 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database');
 
-const Affectation = sequelize.define('Affectation', {
+const Versement = sequelize.define('Versement', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
+  },
+  montant: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: false
+  },
+  type: {
+    type: DataTypes.ENUM('carburant', 'maintenance', 'reparation'),
+    allowNull: false
   },
   vehiculeId: {
     type: DataTypes.INTEGER,
@@ -23,21 +31,18 @@ const Affectation = sequelize.define('Affectation', {
       key: 'id'
     }
   },
-  dateDebut: {
-    type: DataTypes.DATE,
-    allowNull: false
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: true
   },
-  dateFin: {
+  dateVersement: {
     type: DataTypes.DATE,
-    allowNull: false
-  },
-  statut: {
-    type: DataTypes.ENUM('en_cours', 'terminee', 'annulee'),
-    defaultValue: 'en_cours'
+    allowNull: false,
+    defaultValue: DataTypes.NOW
   }
 });
 
 // Synchroniser le modèle avec la base de données
 sequelize.sync();
 
-module.exports = Affectation;
+module.exports = Versement;
