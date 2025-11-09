@@ -78,19 +78,15 @@ app.put('/api/fournisseurs/:id', fournisseurController.updateFournisseur);
 app.delete('/api/fournisseurs/:id', fournisseurController.deleteFournisseur);
 
 // Routes pour la gestion des versements
+app.get('/api/versements/stats', versementController.getVersementsStats); // Mettre stats en premier
+app.get('/api/versements/vehicule/:vehiculeId', versementController.getVersementsByVehicule);
+app.get('/api/versements/chauffeur/:chauffeurId', versementController.getVersementsByChauffeur);
 app.get('/api/versements', versementController.getAllVersements);
 app.get('/api/versements/:id', versementController.getVersementById);
 app.post('/api/versements', versementController.createVersement);
 app.put('/api/versements/:id', versementController.updateVersement);
 app.delete('/api/versements/:id', versementController.deleteVersement);
-app.get('/api/versements/vehicule/:vehiculeId', versementController.getVersementsByVehicule);
-app.get('/api/versements/chauffeur/:chauffeurId', versementController.getVersementsByChauffeur);
-app.get('/api/versements/stats', versementController.getVersementsStats);
-
-
 
 app.listen(port, async () => {
   console.log(`API server listening at http://localhost:${port}`);
-
-
 });
