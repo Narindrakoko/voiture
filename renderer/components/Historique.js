@@ -1,4 +1,11 @@
+
+import { initHistorique } from "./HistoriqueFunctions.js";
+
 export function Historique() {
+  setTimeout(() => {
+    initHistorique();
+  }, 0);
+
   return `
     <main class="historique fadeIn">
       <div class="header-actions">
@@ -105,39 +112,7 @@ export function Historique() {
               </tr>
             </thead>
             <tbody id="historiqueTableBody">
-              <tr>
-                <td>
-                  <div class="date-info">
-                    <span>05/11/2025</span>
-                    <small>14:30</small>
-                  </div>
-                </td>
-                <td><span class="badge badge-primary">Affectation</span></td>
-                <td>
-                  <div class="vehicle-info">
-                    <i class="fas fa-car"></i>
-                    <span>Peugeot 208</span>
-                  </div>
-                </td>
-                <td>
-                  <div class="user-info">
-                    <i class="fas fa-user-circle"></i>
-                    <span>Rasoa Jean</span>
-                  </div>
-                </td>
-                <td>Affectation pour mission de livraison</td>
-                <td><span class="badge badge-success">Terminé</span></td>
-                <td>
-                  <div class="action-buttons">
-                    <button class="action-button view" title="Voir les détails">
-                      <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="action-button print" title="Imprimer">
-                      <i class="fas fa-print"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
+
             </tbody>
           </table>
         </div>
@@ -325,6 +300,64 @@ export function Historique() {
           gap: 10px;
         }
 
+        /* === Modal === */
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+        }
+
+        .modal-content {
+          background: white;
+          border-radius: 10px;
+          width: 400px;
+          max-width: 90%;
+          box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+          animation: fadeIn 0.3s ease;
+        }
+
+        .modal-header, .modal-footer {
+          padding: 15px;
+          border-bottom: 1px solid #eee;
+        }
+
+        .modal-body {
+          padding: 15px;
+        }
+
+        .modal-header h3 {
+          margin: 0;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .close-modal {
+          background: none;
+          border: none;
+          font-size: 1.5rem;
+          color: #888;
+          cursor: pointer;
+          float: right;
+          margin-top: -2rem;
+        }
+
+        .close-modal:hover {
+          color: var(--danger-color);
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: scale(0.9); }
+          to { opacity: 1; transform: scale(1); }
+        }
+
         @media (max-width: 768px) {
           .historique {
             padding: 10px;
@@ -457,6 +490,26 @@ export function Historique() {
           console.log('Export historique...');
         }
       </script>
+
+      <!-- Modal de détails -->
+      <div id="activityModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3><i class="fas fa-eye"></i> Détails de l'activité</h3>
+            <button class="close-modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Date :</strong> <span id="modalDate"></span></p>
+            <p><strong>Heure :</strong> <span id="modalHeure"></span></p>
+            <p><strong>Type :</strong> <span id="modalType"></span></p>
+            <p><strong>Véhicule :</strong> <span id="modalVehicule"></span></p>
+            <p><strong>Chauffeur :</strong> <span id="modalChauffeur"></span></p>
+            <p><strong>Description :</strong> <span id="modalDescription"></span></p>
+            <p><strong>Statut :</strong> <span id="modalStatut"></span></p>
+          </div>
+        </div>
+      </div>
+
     </main>
   `;
 }
