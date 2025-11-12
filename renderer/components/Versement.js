@@ -20,6 +20,7 @@ export function Versement() {
               <option value="carburant">Carburant</option>
               <option value="maintenance">Maintenance</option>
               <option value="reparation">Réparation</option>
+              <option value="revenu">Revenu</option>
             </select>
           </div>
           <button id="btnAjouterVersement" class="btn-primary">
@@ -74,6 +75,17 @@ export function Versement() {
             <p class="stat-label">Ce mois</p>
           </div>
         </div>
+
+        <div class="stat-card" id="stat-revenu">
+          <div class="stat-icon">
+            <i class="fas fa-coins"></i>
+          </div>
+          <div class="stat-info">
+            <h4>Revenus</h4>
+            <p class="stat-value" id="stat-revenu-value">0 Ar</p>
+            <p class="stat-label">Ce mois</p>
+          </div>
+        </div>
       </div>
 
       <!-- Formulaire de versement -->
@@ -107,6 +119,7 @@ export function Versement() {
                 <option value="carburant">Carburant</option>
                 <option value="maintenance">Maintenance</option>
                 <option value="reparation">Réparation</option>
+                <option value="revenu">Revenu</option>
               </select>
             </div>
 
@@ -242,6 +255,10 @@ export function Versement() {
 
         .stat-card:nth-child(4) .stat-icon {
           background: linear-gradient(135deg, #dc3545, #bd2130);
+        }
+
+        .stat-card:nth-child(5) .stat-icon {
+          background: linear-gradient(135deg, #6f42c1, #5a32a3);
         }
 
         .stat-info h4 {

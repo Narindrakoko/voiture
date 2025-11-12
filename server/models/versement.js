@@ -12,7 +12,7 @@ const Versement = sequelize.define('Versement', {
     allowNull: false
   },
   type: {
-    type: DataTypes.ENUM('carburant', 'maintenance', 'reparation'),
+    type: DataTypes.ENUM('carburant', 'maintenance', 'reparation', 'revenu'),
     allowNull: false
   },
   vehiculeId: {

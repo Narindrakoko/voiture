@@ -103,6 +103,24 @@ class VersementController {
             res.status(500).json({ error: error.message });
         }
     }
+
+    async getRevenusByVehicule(req, res) {
+        try {
+            const revenus = await versementService.getRevenusByVehicule(req.params.vehiculeId);
+            res.json(revenus);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async getRevenusStats(req, res) {
+        try {
+            const stats = await versementService.getRevenusStats();
+            res.json(stats);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
 }
 
 module.exports = new VersementController();

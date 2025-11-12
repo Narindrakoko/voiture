@@ -89,6 +89,31 @@ class VersementService {
 
         return stats;
     }
+
+    async getRevenusByVehicule(vehiculeId) {
+        return await Versement.findAll({
+            where: { vehiculeId, type: 'revenu' },
+            include: [
+                { model: Vehicule, as: 'vehicule' },
+                { model: Chauffeur, as: 'chauffeur' }
+            ],
+            order: [['dateVersement', 'DESC']]
+        });
+    }
+
+    async getRevenusStats() {
+        const versements = await Versement.findAll({ where: { type: 'revenu' } });
+
+        const stats = {
+            total: 0
+        };
+
+        versements.forEach(v => {
+            stats.total += parseFloat(v.montant);
+        });
+
+        return stats;
+    }
 }
 
 module.exports = new VersementService();

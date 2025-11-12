@@ -79,6 +79,7 @@ app.delete('/api/fournisseurs/:id', fournisseurController.deleteFournisseur);
 
 // Routes pour la gestion des versements
 app.get('/api/versements/stats', versementController.getVersementsStats); // Mettre stats en premier
+app.get('/api/versements/revenus/stats', versementController.getRevenusStats);
 app.get('/api/versements/vehicule/:vehiculeId', versementController.getVersementsByVehicule);
 app.get('/api/versements/chauffeur/:chauffeurId', versementController.getVersementsByChauffeur);
 app.get('/api/versements', versementController.getAllVersements);

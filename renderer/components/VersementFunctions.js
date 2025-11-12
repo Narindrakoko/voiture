@@ -113,6 +113,19 @@ async function loadStats() {
   }
 }
 
+// Fonction pour charger les statistiques des revenus
+async function loadRevenusStats() {
+  try {
+    const response = await fetch('http://localhost:3000/api/versements/revenus/stats');
+    const stats = await response.json();
+
+    document.getElementById('stat-revenu-value').textContent =
+      `${parseFloat(stats.total || 0).toLocaleString('fr-FR')} Ar`;
+  } catch (error) {
+    console.error('Erreur lors du chargement des statistiques des revenus:', error);
+  }
+}
+
 // Fonction pour charger les véhicules
 async function loadVehicules() {
   try {
@@ -296,6 +309,7 @@ function initVersement() {
   // Charger les données
   loadVersements();
   loadStats();
+  loadRevenusStats();
   loadVehicules();
   loadChauffeurs();
 
