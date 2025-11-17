@@ -54,6 +54,18 @@ const createMaintenance = async (maintenanceData) => {
       throw new Error('Tous les champs requis doivent être remplis');
     }
 
+    // Vérifier si le véhicule a déjà une maintenance en cours
+    const maintenanceExistante = await Maintenance.findOne({
+      where: {
+        vehiculeId: maintenanceData.vehiculeId,
+        statut: 'en_cours'
+      }
+    });
+
+    if (maintenanceExistante) {
+      throw new Error('Ce véhicule est déjà en maintenance. Impossible de créer une nouvelle maintenance tant que la précédente n\'est pas terminée.');
+    }
+
     const maintenance = await Maintenance.create(maintenanceData);
 
     // Créer automatiquement un versement pour cette maintenance
@@ -192,8 +204,26 @@ const getMaintenanceStats = async () => {
   }
 };
 
+// Récupérer une maintenance par ID
+const getMaintenanceById = async (id) => {
+  try {
+    const maintenance = await Maintenance.findByPk(id, {
+      include: [
+        { model: Vehicule, as: 'vehicule' },
+        { model: Chauffeur, as: 'chauffeur' },
+        { model: Fournisseur, as: 'fournisseur' }
+      ]
+    });
+    return maintenance;
+  } catch (error) {
+    console.error('Erreur dans le service getMaintenanceById:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   getAllMaintenances,
+  getMaintenanceById,
   createMaintenance,
   updateMaintenance,
   deleteMaintenance,

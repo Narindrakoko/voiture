@@ -1,8 +1,28 @@
 const Vehicule = require('../models/vehicule');
+const Maintenance = require('../models/maintenance');
 
 class VehiculeService {
     async getAllVehicules() {
-        return await Vehicule.findAll();
+        const vehicules = await Vehicule.findAll();
+
+        // Pour chaque véhicule, vérifier s'il est en maintenance
+        const vehiculesWithStatus = await Promise.all(
+            vehicules.map(async (vehicule) => {
+                const maintenanceEnCours = await Maintenance.findOne({
+                    where: {
+                        vehiculeId: vehicule.id,
+                        statut: 'en_cours'
+                    }
+                });
+
+                return {
+                    ...vehicule.toJSON(),
+                    enMaintenance: !!maintenanceEnCours
+                };
+            })
+        );
+
+        return vehiculesWithStatus;
     }
 
     async getVehiculeById(id) {

@@ -35,6 +35,11 @@ async function loadVehicules() {
         <td>${v.modele}</td>
         <td>${new Date(v.dateAchat).toLocaleDateString()}</td>
         <td>${v.kilometrage}</td>
+        <td>
+          <span class="status-badge ${v.enMaintenance ? 'status-maintenance' : 'status-disponible'}">
+            ${v.enMaintenance ? 'En maintenance' : 'Disponible'}
+          </span>
+        </td>
         <td class="action-buttons">
           <button onclick="editVehicule(${v.id})" title="Modifier">
             <i class="fas fa-edit"></i>

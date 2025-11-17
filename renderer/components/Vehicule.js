@@ -99,6 +99,7 @@ export function Vehicule() {
               <th>Modèle</th>
               <th>Date d'achat</th>
               <th>Kilométrage</th>
+              <th>Statut Maintenance</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -218,6 +219,28 @@ export function Vehicule() {
         .action-buttons button:hover {
           background: var(--light-bg);
           color: var(--primary-color);
+        }
+
+        .status-badge {
+          padding: 4px 8px;
+          border-radius: 12px;
+          font-size: 0.85em;
+          font-weight: 500;
+          text-align: center;
+          display: inline-block;
+          min-width: 100px;
+        }
+
+        .status-disponible {
+          background-color: #d4edda;
+          color: #155724;
+          border: 1px solid #c3e6cb;
+        }
+
+        .status-maintenance {
+          background-color: #f8d7da;
+          color: #721c24;
+          border: 1px solid #f5c6cb;
         }
 
         @media (max-width: 768px) {

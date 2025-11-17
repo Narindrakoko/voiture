@@ -131,10 +131,11 @@ function createMaintenanceRow(maintenance) {
 
 async function loadSelectOptions() {
   try {
-    // Charger véhicules
+    // Charger véhicules disponibles (sans maintenance en cours)
     const vehiculesResponse = await fetch('http://localhost:3000/api/vehicules');
     const vehicules = await vehiculesResponse.json();
-    populateSelect('vehicule', vehicules, 'immatriculation');
+    const vehiculesDisponibles = vehicules.filter(v => !v.enMaintenance);
+    populateSelect('vehicule', vehiculesDisponibles, 'immatriculation');
 
     // Charger chauffeurs
     const chauffeursResponse = await fetch('http://localhost:3000/api/chauffeurs');
