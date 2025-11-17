@@ -1,0 +1,425 @@
+import { initMaintenance } from './MaintenanceFunctions.js';
+
+export function Maintenance() {
+  setTimeout(() => {
+    initMaintenance();
+  }, 0);
+
+  return `
+    <main class="maintenances fadeIn">
+      <div class="header-actions">
+        <h2><i class="fas fa-tools"></i> Gestion des maintenances</h2>
+        <div class="header-controls">
+          <div class="filters">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" id="searchMaintenance" placeholder="Rechercher une maintenance...">
+            </div>
+            <select id="filterStatut" class="form-control">
+              <option value="">Tous les statuts</option>
+              <option value="en_cours">En cours</option>
+              <option value="termine">Terminé</option>
+            </select>
+            <select id="filterType" class="form-control">
+              <option value="">Tous les types</option>
+              <option value="preventive">Préventive</option>
+              <option value="corrective">Corrective</option>
+              <option value="revision">Révision</option>
+              <option value="reparation">Réparation</option>
+            </select>
+          </div>
+          <button id="btnAjouterMaintenance" class="btn-primary">
+            <i class="fas fa-plus"></i>
+            Nouvelle maintenance
+          </button>
+        </div>
+      </div>
+
+      <!-- Statistiques rapides -->
+      <div class="stats-overview">
+        <div class="stat-card" id="stat-total">
+          <div class="stat-icon">
+            <i class="fas fa-tools"></i>
+          </div>
+          <div class="stat-info">
+            <h4>Total Maintenances</h4>
+            <p class="stat-value" id="stat-total-value">0</p>
+            <p class="stat-label">Ce mois</p>
+          </div>
+        </div>
+
+        <div class="stat-card" id="stat-en-cours">
+          <div class="stat-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-info">
+            <h4>En cours</h4>
+            <p class="stat-value" id="stat-en-cours-value">0</p>
+            <p class="stat-label">En attente</p>
+          </div>
+        </div>
+
+        <div class="stat-card" id="stat-termine">
+          <div class="stat-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-info">
+            <h4>Terminées</h4>
+            <p class="stat-value" id="stat-termine-value">0</p>
+            <p class="stat-label">Complétées</p>
+          </div>
+        </div>
+
+        <div class="stat-card" id="stat-cout">
+          <div class="stat-icon">
+            <i class="fas fa-money-bill-wave"></i>
+          </div>
+          <div class="stat-info">
+            <h4>Coût total</h4>
+            <p class="stat-value" id="stat-cout-value">0 Ar</p>
+            <p class="stat-label">Ce mois</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulaire de maintenance -->
+      <div class="form-container" style="display: none;">
+        <form id="maintenanceForm" class="form-maintenance">
+          <div class="form-header">
+            <h3><i class="fas fa-wrench"></i> Nouvelle maintenance</h3>
+            <button type="button" class="btn-icon" id="closeForm">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <input type="hidden" id="maintenanceId">
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="vehicule">
+                <i class="fas fa-car"></i>
+                Véhicule:
+              </label>
+              <select id="vehicule" required class="form-control">
+                <option value="">Sélectionner le véhicule</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="chauffeur">
+                <i class="fas fa-user"></i>
+                Chauffeur:
+              </label>
+              <select id="chauffeur" required class="form-control">
+                <option value="">Sélectionner le chauffeur</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="fournisseur">
+                <i class="fas fa-truck"></i>
+                Fournisseur:
+              </label>
+              <select id="fournisseur" required class="form-control">
+                <option value="">Sélectionner le fournisseur</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="typeMaintenance">
+                <i class="fas fa-tag"></i>
+                Type de maintenance:
+              </label>
+              <select id="typeMaintenance" required class="form-control">
+                <option value="">Sélectionner le type</option>
+                <option value="preventive">Préventive</option>
+                <option value="corrective">Corrective</option>
+                <option value="revision">Révision</option>
+                <option value="reparation">Réparation</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="montant">
+                <i class="fas fa-money-bill"></i>
+                Montant:
+              </label>
+              <input type="number" id="montant" required class="form-control" min="0" step="0.01">
+            </div>
+
+            <div class="form-group">
+              <label for="dateMaintenance">
+                <i class="fas fa-calendar-alt"></i>
+                Date:
+              </label>
+              <input type="date" id="dateMaintenance" class="form-control" value="${new Date().toISOString().split('T')[0]}">
+            </div>
+
+            <div class="form-group">
+              <label for="statut">
+                <i class="fas fa-info-circle"></i>
+                Statut:
+              </label>
+              <select id="statut" class="form-control">
+                <option value="en_cours">En cours</option>
+                <option value="termine">Terminé</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="description">
+                <i class="fas fa-comment"></i>
+                Description:
+              </label>
+              <textarea id="description" class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">
+              <i class="fas fa-save"></i>
+              Enregistrer
+            </button>
+            <button type="button" class="btn-secondary" id="resetForm">
+              <i class="fas fa-undo"></i>
+              Réinitialiser
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Liste des maintenances -->
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th><i class="fas fa-hashtag"></i> ID</th>
+              <th><i class="fas fa-car"></i> Véhicule</th>
+              <th><i class="fas fa-user"></i> Chauffeur</th>
+              <th><i class="fas fa-truck"></i> Fournisseur</th>
+              <th><i class="fas fa-tag"></i> Type</th>
+              <th><i class="fas fa-money-bill"></i> Montant</th>
+              <th><i class="fas fa-calendar-alt"></i> Date</th>
+              <th><i class="fas fa-info-circle"></i> Statut</th>
+              <th><i class="fas fa-cog"></i> Actions</th>
+            </tr>
+          </thead>
+          <tbody id="maintenanceTableBody">
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Notification -->
+      <div id="notification" class="notification"></div>
+
+      <style>
+        .maintenances {
+          padding: var(--spacing);
+          background-color: #f5f7fa;
+        }
+
+        .filters {
+          display: flex;
+          gap: 15px;
+          align-items: center;
+        }
+
+        .stats-overview {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 20px;
+          margin-bottom: 30px;
+          margin-top: 20px;
+        }
+
+        .stat-card {
+          background: white;
+          border-radius: var(--radius);
+          padding: 20px;
+          display: flex;
+          align-items: center;
+          gap: 20px;
+          box-shadow: var(--shadow);
+          transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+          transform: translateY(-5px);
+        }
+
+        .stat-icon {
+          width: 50px;
+          height: 50px;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.5rem;
+          color: white;
+        }
+
+        .stat-card:nth-child(1) .stat-icon {
+          background: linear-gradient(135deg, #2d89ef, #1a6cd1);
+        }
+
+        .stat-card:nth-child(2) .stat-icon {
+          background: linear-gradient(135deg, #ffc107, #d39e00);
+        }
+
+        .stat-card:nth-child(3) .stat-icon {
+          background: linear-gradient(135deg, #28a745, #1e7e34);
+        }
+
+        .stat-card:nth-child(4) .stat-icon {
+          background: linear-gradient(135deg, #dc3545, #bd2130);
+        }
+
+        .stat-info h4 {
+          margin: 0;
+          font-size: 0.9rem;
+          color: #666;
+        }
+
+        .stat-value {
+          margin: 5px 0;
+          font-size: 1.5rem;
+          font-weight: bold;
+          color: #2c3e50;
+        }
+
+        .stat-label {
+          margin: 0;
+          font-size: 0.8rem;
+          color: #666;
+        }
+
+        .form-container {
+          background: white;
+          border-radius: var(--radius);
+          box-shadow: var(--shadow);
+          margin-bottom: 30px;
+          overflow: hidden;
+        }
+
+        .form-header {
+          background: var(--light-bg);
+          padding: 15px 20px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          border-bottom: 1px solid var(--border-color);
+        }
+
+        .form-maintenance {
+          padding: 20px;
+        }
+
+        .form-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 20px;
+        }
+
+        .form-group.full-width {
+          grid-column: 1 / -1;
+        }
+
+        textarea.form-control {
+          resize: vertical;
+          min-height: 100px;
+        }
+
+        .action-buttons {
+          display: flex;
+          gap: 8px;
+        }
+
+        .action-button {
+          background: none;
+          border: none;
+          color: #666;
+          cursor: pointer;
+          padding: 5px;
+          border-radius: 4px;
+          transition: all 0.3s ease;
+        }
+
+        .action-button:hover {
+          background: var(--light-bg);
+          color: var(--primary-color);
+        }
+
+        .action-button.edit:hover {
+          color: #ffc107;
+        }
+
+        .action-button.delete:hover {
+          color: #dc3545;
+        }
+
+        .badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          padding: 5px 10px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 500;
+        }
+
+        .badge-en-cours {
+          background-color: rgba(255, 193, 7, 0.1);
+          color: #856404;
+        }
+
+        .badge-termine {
+          background-color: rgba(40, 167, 69, 0.1);
+          color: #155724;
+        }
+
+        @media (max-width: 768px) {
+          .maintenances {
+            padding: 10px;
+          }
+
+          .header-actions {
+            flex-direction: column;
+            gap: 15px;
+          }
+
+          .header-controls {
+            width: 100%;
+            flex-direction: column;
+          }
+
+          .filters {
+            width: 100%;
+            flex-direction: column;
+          }
+
+          .search-box,
+          .filters select {
+            width: 100%;
+          }
+
+          .stats-overview {
+            grid-template-columns: 1fr;
+            margin-top: 15px;
+          }
+
+          .form-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .form-maintenance {
+            padding: 15px;
+          }
+
+          .action-buttons {
+            flex-wrap: wrap;
+          }
+        }
+      </style>
+    </main>
+  `;
+}

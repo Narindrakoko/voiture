@@ -67,6 +67,12 @@ export function Sidebar() {
                   <span>Fournisseurs</span>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="#maintenances" class="nav-link" id="menu-maintenances">
+                  <i class="fas fa-tools"></i>
+                  <span>Maintenances</span>
+                </a>
+              </li>
             </ul>
           </div>
 

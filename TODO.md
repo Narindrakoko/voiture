@@ -1,0 +1,2 @@
+- [x] Modifier server/services/maintenanceService.js pour importer VersementService et créer un versement lors de la création d'une maintenance
+- [x] Tester la fonctionnalité en ajoutant une maintenance et vérifier que le versement est créé

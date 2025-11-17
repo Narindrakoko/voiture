@@ -8,6 +8,7 @@ const chauffeurController = require('./controllers/chauffeurController');
 const affectationController = require('./controllers/affectationController');
 const fournisseurController = require('./controllers/fournisseurController');
 const versementController = require('./controllers/versementController');
+const maintenanceController = require('./controllers/maintenanceController');
 
 // Import du seeding
 
@@ -87,6 +88,17 @@ app.get('/api/versements/:id', versementController.getVersementById);
 app.post('/api/versements', versementController.createVersement);
 app.put('/api/versements/:id', versementController.updateVersement);
 app.delete('/api/versements/:id', versementController.deleteVersement);
+
+// Routes pour la gestion des maintenances
+app.get('/api/maintenances/stats', maintenanceController.getMaintenanceStats);
+app.get('/api/maintenances/vehicule/:vehiculeId', maintenanceController.getMaintenancesByVehicule);
+app.get('/api/maintenances/chauffeur/:chauffeurId', maintenanceController.getMaintenancesByChauffeur);
+app.get('/api/maintenances/fournisseur/:fournisseurId', maintenanceController.getMaintenancesByFournisseur);
+app.get('/api/maintenances', maintenanceController.getAllMaintenances);
+app.get('/api/maintenances/:id', maintenanceController.getMaintenanceById);
+app.post('/api/maintenances', maintenanceController.createMaintenance);
+app.put('/api/maintenances/:id', maintenanceController.updateMaintenance);
+app.delete('/api/maintenances/:id', maintenanceController.deleteMaintenance);
 
 app.listen(port, async () => {
   console.log(`API server listening at http://localhost:${port}`);

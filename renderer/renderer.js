@@ -6,6 +6,7 @@ import { Dashboard } from './components/dashboard.js';
 import { Fournisseur } from './components/Fournisseur.js';
 import { Header } from './components/header.js';
 import { Historique } from './components/Historique.js';
+import { Maintenance } from './components/Maintenance.js';
 import { Sidebar } from './components/sidebar.js';
 import { Vehicule } from './components/Vehicule.js';
 import { Versement } from './components/Versement.js';
@@ -20,6 +21,7 @@ window.Chauffeur = Chauffeur;
 // window.ChauffeurForm = ChauffeurForm;
 window.Fournisseur = Fournisseur;
 window.Historique = Historique;
+window.Maintenance = Maintenance;
 window.Versement = Versement;
 window.Acceuil = Acceuil;
 
@@ -119,6 +121,9 @@ document.addEventListener('click', (e) => {
       break;
     case 'menu-fournisseurs':
       render(Fournisseur());
+      break;
+    case 'menu-maintenances':
+      render(Maintenance());
       break;
     case 'menu-historiques':
       render(Historique());
@@ -231,3 +236,20 @@ window.addEventListener('hashchange', () => {
     element.click();
   }
 });
+
+// Fonction pour afficher les notifications
+function showNotification(message, type = 'success') {
+  const notification = document.getElementById('notification');
+  if (notification) {
+    notification.textContent = message;
+    notification.className = `notification ${type}`;
+    notification.classList.add('show');
+
+    setTimeout(() => {
+      notification.classList.remove('show');
+    }, 3000);
+  }
+}
+
+// Exporter la fonction globalement
+window.showNotification = showNotification;
