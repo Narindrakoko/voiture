@@ -1,3 +1,4 @@
+//Historique.js//
 
 import { initHistorique } from "./HistoriqueFunctions.js";
 
@@ -353,6 +354,59 @@ export function Historique() {
           color: var(--danger-color);
         }
 
+        .action-buttons {
+          display: flex;
+          gap: 10px;
+        }
+
+        .action-button {
+          background: none;
+          border: none;
+          color: #555;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .action-button:hover {
+          color: var(--primary-color);
+          transform: scale(1.1);
+        }
+
+        .action-button.view:hover {
+          color: #007bff;
+        }
+
+        .action-button.print:hover {
+          color: #28a745;
+        }
+
+        .modal {
+          display: none;
+          position: fixed;
+          top: 0; left: 0; width: 100%; height: 100%;
+          background: rgba(0,0,0,0.4);
+          justify-content: center; align-items: center;
+          z-index: 999;
+        }
+        .modal-content {
+          background: #fff;
+          padding: 20px;
+          border-radius: 10px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .btn {
+          padding: 8px 14px;
+          border: none;
+          border-radius: 6px;
+          margin: 0 5px;
+          cursor: pointer;
+        }
+        .btn.primary { background: #007bff; color: white; }
+        .btn.success { background: #28a745; color: white; }
+        .close-modal { background: #ffff; }
+
         @keyframes fadeIn {
           from { opacity: 0; transform: scale(0.9); }
           to { opacity: 1; transform: scale(1); }
@@ -507,6 +561,23 @@ export function Historique() {
             <p><strong>Description :</strong> <span id="modalDescription"></span></p>
             <p><strong>Statut :</strong> <span id="modalStatut"></span></p>
           </div>
+        </div>
+      </div>
+
+      <!-- Modal de choix d'impression / téléchargement -->
+      <div id="pdfChoiceModal" class="modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center; position: relative;">
+          <button class="close-modal">&times;</button>
+            <h3 style="margin-top: 10px;">Choisir une action</h3>
+              <p>Souhaitez-vous imprimer ou télécharger ce document en PDF ?</p>
+            <div style="margin-top: 20px;">
+              <button id="btnImprimer" class="btn primary">
+                <i class="fas fa-print"></i> Imprimer
+              </button>
+              <button id="btnTelecharger" class="btn success">
+                <i class="fas fa-file-pdf"></i> Télécharger
+              </button>
+            </div>
         </div>
       </div>
 

@@ -1,4 +1,19 @@
+//Header.js//
+
 export function Header() {
+  // ⚡ Après le rendu, on initialise les événements
+  setTimeout(() => {
+    // Déconnexion
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+        console.log("🔴 Déconnexion...");
+        localStorage.removeItem("user");
+        if (typeof renderLoginOnly === "function") renderLoginOnly();
+      });
+    }
+  }, 0);
+
   return `
     <header class="main-header">
       <div class="header-left">
@@ -10,6 +25,7 @@ export function Header() {
 
       <div class="header-right">
         <div class="header-actions">
+
           <button class="btn-icon" id="btnNotifications" title="Notifications">
             <i class="fas fa-bell"></i>
             <span class="notification-badge">3</span>
@@ -19,14 +35,41 @@ export function Header() {
             <i class="fas fa-cog"></i>
           </button>
 
+          <!-- UTILISATEUR + LOGOUT -->
           <div class="user-menu">
-            <button class="btn-user" id="btnUserMenu">
-              <img src="https://ui-avatars.com/api/?name=Admin&background=random" alt="User" class="user-avatar">
-              <span class="user-name">Admin</span>
+            <span class="user-name">Admin</span>
+            <button id="logoutBtn" class="btn-icon" title="Déconnexion">
+              <i class="fas fa-sign-out-alt"></i>
             </button>
           </div>
+
         </div>
       </div>
+
+      <style>
+        .user-menu {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .user-name {
+          font-weight: bold;
+          color: var(--primary-color);
+        }
+
+        #logoutBtn {
+          background: none;
+          border: none;
+          cursor: pointer;
+          color: red;
+          font-size: 1.2rem;
+        }
+
+        #logoutBtn:hover {
+          opacity: 0.8;
+        }
+      </style>
     </header>
   `;
 }

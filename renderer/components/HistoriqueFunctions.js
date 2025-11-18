@@ -1,4 +1,4 @@
-
+//HistoriqueFunction.js//
 
 // renderer/components/historiqueFunctions.js
 
@@ -6,6 +6,7 @@
 // Variables globales
 // ======================
 let allActivities = [];
+const { jsPDF } = window.jspdf;
 
 // ======================
 // Fonction principale d'initialisation
@@ -284,7 +285,6 @@ function getStatusColor(statut) {
 window.viewActivity = function (id, type) {
     const activity = allActivities.find(a => a.id === id && a.type === type);
     if (!activity) return;
-
     // Remplir les infos dans le modal
     document.getElementById("modalDate").textContent = formatDate(activity.date);
     document.getElementById("modalHeure").textContent = activity.heure || "—";
@@ -304,6 +304,7 @@ window.viewActivity = function (id, type) {
       };
     });
 
+
     // Fermer si on clique en dehors
     document.getElementById("activityModal").onclick = (e) => {
       if (e.target.id === "activityModal") {
@@ -311,6 +312,124 @@ window.viewActivity = function (id, type) {
       }
     };
   };
+
+  window.printActivity = async function (id, type) {
+    const activity = allActivities.find(a => a.id === id && a.type === type);
+    if (!activity) return alert("Activité introuvable !");
+
+    const modal = document.getElementById("pdfChoiceModal");
+    modal.style.display = "flex";
+
+    // Bouton impression HTML
+    document.getElementById("btnImprimer").onclick = () => {
+      modal.style.display = "none";
+      const htmlContent = `
+        <html>
+        <head>
+          <title>Détails activité</title>
+          <style>
+            body { font-family: 'Arial', sans-serif; padding: 40px; background-color: #f5f5f5; color: #333; }
+            h2 { color: #1976d2; border-bottom: 2px solid #1976d2; padding-bottom: 5px; }
+            p { margin: 8px 0; }
+            strong { color: #1976d2; }
+            hr { border: none; border-top: 1px solid #ccc; margin: 15px 0; }
+            small { color: #777; }
+          </style>
+        </head>
+        <body>
+          <h2>Détails de l'activité</h2>
+          <p><strong>Date :</strong> ${formatDate(activity.date)}</p>
+          <p><strong>Heure :</strong> ${activity.heure || "—"}</p>
+          <p><strong>Type :</strong> ${capitalize(activity.type)}</p>
+          <p><strong>Véhicule :</strong> ${activity.vehicule}</p>
+          <p><strong>Chauffeur :</strong> ${activity.chauffeur}</p>
+          <p><strong>Description :</strong> ${activity.description}</p>
+          <p><strong>Statut :</strong> ${capitalize(activity.statut)}</p>
+          <hr>
+          <small>Généré automatiquement — ${new Date().toLocaleString("fr-FR")}</small>
+          <script>window.print();</script>
+        </body>
+        </html>
+      `;
+      const blob = new Blob([htmlContent], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+    };
+
+    // Bouton téléchargement PDF
+    document.getElementById("btnTelecharger").onclick = () => {
+      modal.style.display = "none";
+      const doc = new jsPDF({ unit: "pt", format: "a4" });
+      let y = 40;
+
+      // Couleurs et styles
+      const primaryColor = "#1976d2";
+      const secondaryColor = "#eeeeee";
+      const textColor = "#333";
+
+      doc.setFillColor(primaryColor);
+      doc.rect(0, 0, 595, 50, "F"); // bande en haut
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(22);
+      doc.setFont("helvetica", "bold");
+      doc.text("Détails de l'activité", 40, 35);
+
+      y += 60;
+      doc.setFontSize(12);
+      doc.setTextColor(...hexToRgb(textColor));
+      doc.setFont("helvetica", "normal");
+
+      const addLine = (label, value) => {
+        doc.setTextColor(primaryColor);
+        doc.text(`${label}:`, 40, y);
+        doc.setTextColor(...hexToRgb(textColor));
+        doc.text(`${value}`, 120, y);
+        y += 20;
+      };
+
+      addLine("Date", formatDate(activity.date));
+      addLine("Heure", activity.heure || "—");
+      addLine("Type", capitalize(activity.type));
+      addLine("Véhicule", activity.vehicule);
+      addLine("Chauffeur", activity.chauffeur);
+
+      const safeDescription = activity.description.replace(/\u202F/g, ' ');
+      const descriptionLines = doc.splitTextToSize(safeDescription, 400);
+      doc.setTextColor(primaryColor);
+      doc.text("Description:", 40, y);
+      doc.setTextColor(...hexToRgb(textColor));
+      doc.text(descriptionLines, 120, y);
+      y += descriptionLines.length * 15;
+
+      addLine("Statut", capitalize(activity.statut));
+
+      y += 20;
+      doc.setDrawColor(200);
+      doc.setLineWidth(0.5);
+      doc.line(40, y, 555, y);
+      y += 15;
+
+      doc.setFontSize(10);
+      doc.setTextColor(120);
+      doc.text(`Généré le : ${new Date().toLocaleString("fr-FR")}`, 40, y);
+
+      doc.save(`Activité_${activity.id}_${activity.type}.pdf`);
+    };
+
+    modal.querySelector(".close-modal").onclick = () => {
+      modal.style.display = "none";
+    };
+    modal.onclick = (e) => {
+      if (e.target.id === "pdfChoiceModal") modal.style.display = "none";
+    };
+
+    // Helper pour convertir hex en RGB
+    function hexToRgb(hex) {
+      const bigint = parseInt(hex.replace("#",""), 16);
+      return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+    }
+  };
+
 
   window.printActivity = function(id, type) {
     const activity = allActivities.find(a => a.id === id && a.type === type);

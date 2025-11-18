@@ -248,6 +248,37 @@ export function Chauffeur() {
           margin-bottom: 15px;
         }
 
+        .modal {
+          display: none;
+          position: fixed;
+          z-index: 1000;
+          padding-top: 100px;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+          background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+          background-color: #fefefe;
+          margin: auto;
+          padding: 20px;
+          border-radius: 10px;
+          width: 400px;
+          position: relative;
+        }
+        .close {
+          color: #aaa;
+          float: right;
+          font-size: 28px;
+          font-weight: bold;
+          cursor: pointer;
+        }
+        .close:hover { color: #000; }
+        textarea { width: 100%; margin-top: 10px; padding: 10px; border-radius: 5px; }
+        button { margin-top: 10px; }
+
         @media (max-width: 768px) {
           .chauffeurs {
             padding: 10px;
@@ -283,6 +314,16 @@ export function Chauffeur() {
           }
         }
       </style>
+
+      <!-- Modal pour notifier un chauffeur -->
+<div id="modalNotifier" class="modal">
+  <div class="modal-content">
+    <span id="closeModal" class="close">&times;</span>
+    <h2>Envoyer une notification au chauffeur</h2>
+    <textarea id="modalMessage" placeholder="Écrivez votre message ici..." rows="6"></textarea>
+    <button id="sendModalMessage" class="btn-primary">Envoyer</button>
+  </div>
+</div>
     </main>
   `;
 }

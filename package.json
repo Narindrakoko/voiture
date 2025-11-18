@@ -14,7 +14,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "jspdf": "^3.0.3",
+    "nodemailer": "^7.0.10",
     "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7"
   },

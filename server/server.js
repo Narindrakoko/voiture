@@ -1,4 +1,5 @@
 // server/server.js
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const app = express();
@@ -8,6 +9,7 @@ const chauffeurController = require('./controllers/chauffeurController');
 const affectationController = require('./controllers/affectationController');
 const fournisseurController = require('./controllers/fournisseurController');
 const versementController = require('./controllers/versementController');
+const utilisateurController = require('./controllers/utilisateurController');
 const maintenanceController = require('./controllers/maintenanceController');
 
 // Import du seeding
@@ -61,6 +63,7 @@ app.get('/api/chauffeurs/:id', chauffeurController.getChauffeurById);
 app.post('/api/chauffeurs', chauffeurController.createChauffeur);
 app.put('/api/chauffeurs/:id', chauffeurController.updateChauffeur);
 app.delete('/api/chauffeurs/:id', chauffeurController.deleteChauffeur);
+app.post('/api/chauffeurs/:id/notifier', chauffeurController.notifierChauffeur);
 
 // Routes pour la gestion des affectations
 app.get('/api/affectations', affectationController.getAllAffectations);
@@ -88,6 +91,14 @@ app.get('/api/versements/:id', versementController.getVersementById);
 app.post('/api/versements', versementController.createVersement);
 app.put('/api/versements/:id', versementController.updateVersement);
 app.delete('/api/versements/:id', versementController.deleteVersement);
+
+//Routes pour l'utilisateur
+app.get('/api/utilisateur', utilisateurController.getAllUtilisateurs);
+app.get('/api/utilisateur/:id', utilisateurController.getUtilisateurById);
+app.post('/api/utilisateur', utilisateurController.createUtilisateur);
+app.put('/api/utilisateur/:id', utilisateurController.updateUtilisateur);
+app.delete('/api/utilisateur/:id', utilisateurController.deleteUtilisateur);
+app.post('/api/utilisateur/login', utilisateurController.loginUtilisateur);
 
 // Routes pour la gestion des maintenances
 app.get('/api/maintenances/stats', maintenanceController.getMaintenanceStats);

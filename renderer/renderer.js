@@ -1,3 +1,5 @@
+//render.js//
+
 import { Acceuil } from './components/Acceuil.js';
 import { Affectation } from './components/Affectation.js';
 import { Chauffeur } from './components/Chauffeur.js';
@@ -6,6 +8,7 @@ import { Dashboard } from './components/dashboard.js';
 import { Fournisseur } from './components/Fournisseur.js';
 import { Header } from './components/header.js';
 import { Historique } from './components/Historique.js';
+import { Login } from './components/Login.js';
 import { Maintenance } from './components/Maintenance.js';
 import { Sidebar } from './components/sidebar.js';
 import { Vehicule } from './components/Vehicule.js';
@@ -42,6 +45,13 @@ const initApp = async () => {
 
   // Wrap the render function to handle errors
   window.render = function(content) {
+
+    const user = localStorage.getItem("user");
+    if (!user) {
+      renderLoginOnly();
+      return;
+    }
+
     try {
       app.innerHTML = `
         <div class="main-container">
@@ -52,6 +62,7 @@ const initApp = async () => {
           </div>
         </div>
       `;
+
 
       // Add loaded class to hide loading screen
       document.body.classList.add('app-loaded');
@@ -90,11 +101,31 @@ const initApp = async () => {
 
   // Initial render
   try {
-    render(Dashboard());
+    const user = localStorage.getItem("user");
+
+    if (!user) {
+      renderLoginOnly();
+    } else {
+      render(Dashboard());
+    }
   } catch (error) {
     console.error('Error during initial render:', error);
   }
 };
+
+window.renderLoginOnly = function() {
+  const app = document.getElementById("app");
+
+  app.innerHTML = `
+    <div class="login-wrapper">
+      ${Login()}
+    </div>
+  `;
+
+  // Pas de header, pas de sidebar
+  document.body.classList.add("app-loaded");
+};
+
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', initApp);

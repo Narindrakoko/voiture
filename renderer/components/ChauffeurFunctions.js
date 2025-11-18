@@ -61,6 +61,9 @@ async function loadChauffeurs() {
               <button onclick="deleteChauffeur(${c.id})" class="action-button delete" title="Supprimer">
                 <i class="fas fa-trash"></i>
               </button>
+              <button onclick="openNotifierModal(${c.id})" class="action-button" title="Notifier">
+                <i class="fas fa-envelope"></i>
+              </button>
             </div>
           </td>
         </tr>
@@ -207,9 +210,62 @@ function initChauffeur() {
   });
 }
 
+function openNotifierModal(id) {
+  const modal = document.getElementById('modalNotifier');
+  const textarea = document.getElementById('modalMessage');
+  modal.style.display = 'block';
+  textarea.value = ''; // vide par défaut
+
+  const closeModal = document.getElementById('closeModal');
+  closeModal.onclick = () => { modal.style.display = 'none'; };
+
+  const sendButton = document.getElementById('sendModalMessage');
+
+  // Supprimer les anciens listeners pour éviter les doublons
+  const newButton = sendButton.cloneNode(true);
+  sendButton.parentNode.replaceChild(newButton, sendButton);
+
+  newButton.onclick = async () => {
+    const message = textarea.value.trim();
+    if (!message) {
+      showNotification("Veuillez écrire un message avant d'envoyer", "error");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:3000/api/chauffeurs/${id}/notifier`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }) // on envoie le message au backend
+      });
+
+      if (response.ok) {
+        showNotification("Email de notification envoyé avec succès");
+        modal.style.display = 'none';
+      } else {
+        const data = await response.json();
+        showNotification(data.message || "Erreur lors de l'envoi de l'email", "error");
+      }
+    } catch (error) {
+      console.error(error);
+      showNotification("Erreur lors de l'envoi de l'email", "error");
+    }
+  };
+}
+
+// Fermer le modal si clic en dehors
+window.onclick = function(event) {
+  const modal = document.getElementById('modalNotifier');
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+};
+
+
 // Attacher les fonctions globales
 window.editChauffeur = editChauffeur;
 window.deleteChauffeur = deleteChauffeur;
 window.showNotification = showNotification;
+window.openNotifierModal = openNotifierModal;
 
 export { initChauffeur };

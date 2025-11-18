@@ -1,4 +1,5 @@
 const chauffeurService = require('../services/chauffeurService');
+const emailService = require('../emailService');
 
 class ChauffeurController {
     async getAllChauffeurs(req, res) {
@@ -56,6 +57,22 @@ class ChauffeurController {
             }
         }
     }
+
+    async notifierChauffeur(req, res) {
+        try {
+          const { message } = req.body; // récupérer le message envoyé depuis le modal
+          const result = await chauffeurService.notifierChauffeur(req.params.id, message);
+          res.json(result);
+        } catch (error) {
+          if (error.message === 'Chauffeur non trouvé') {
+            res.status(404).json({ message: error.message });
+          } else {
+            console.error(error);
+            res.status(500).json({ message: "Erreur lors de l'envoi de l'email" });
+          }
+        }
+    }
+
 }
 
 module.exports = new ChauffeurController();
