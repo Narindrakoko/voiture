@@ -207,7 +207,7 @@ function generateAlerts(vehicules, chauffeurs, versements) {
   const now = new Date();
 
   // Alerte pour véhicules nécessitant maintenance
-  const vehiclesNeedingMaintenance = vehicules.filter(v => v.kilometrage > 80000);
+  const vehiclesNeedingMaintenance = vehicules.filter(v => v.kilometrage > 10000);
   if (vehiclesNeedingMaintenance.length > 0) {
     alerts.push({
       type: 'warning',
