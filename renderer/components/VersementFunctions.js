@@ -85,7 +85,8 @@ async function loadStats() {
       total: 0,
       carburant: 0,
       maintenance: 0,
-      reparation: 0
+      reparation: 0,
+      revenus: 0
     };
 
     versementsThisMonth.forEach(v => {
@@ -108,6 +109,11 @@ async function loadStats() {
       `${parseFloat(stats.maintenance || 0).toLocaleString('fr-FR')} Ar`;
     document.getElementById('stat-reparation-value').textContent =
       `${parseFloat(stats.reparation || 0).toLocaleString('fr-FR')} Ar`;
+
+    // Calculer les dépenses (total - revenus)
+    const depenses = stats.total - (stats.revenus || 0);
+    document.getElementById('stat-depense-value').textContent =
+      `${parseFloat(depenses || 0).toLocaleString('fr-FR')} Ar`;
   } catch (error) {
     console.error('Erreur lors du chargement des statistiques:', error);
   }

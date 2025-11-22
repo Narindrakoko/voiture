@@ -49,30 +49,33 @@ function calculateStats(vehicules, chauffeurs, affectations, versements) {
     }
   };
 
-  // Stats affectations
-  const affectationsThisMonth = affectations.filter(a => {
-    const affectDate = new Date(a.dateDebut);
-    return affectDate.getMonth() === currentMonth && affectDate.getFullYear() === currentYear;
+  // Stats revenus (versements de type 'revenu')
+  const revenusThisMonth = versements.filter(v => {
+    const versementDate = new Date(v.dateVersement);
+    return versementDate.getMonth() === currentMonth && versementDate.getFullYear() === currentYear && v.type === 'revenu';
   });
 
-  const affectationsStats = {
-    total: affectationsThisMonth.length,
+  const revenusTotal = revenusThisMonth.reduce((sum, v) => sum + parseFloat(v.montant), 0);
+
+  const revenusStats = {
+    total: revenusTotal,
     trend: {
       value: 5,
       isPositive: false
     }
   };
 
-  // Stats versements
-  const versementsThisMonth = versements.filter(v => {
+  // Stats dépenses (versements autres que 'revenu')
+  const depensesThisMonth = versements.filter(v => {
     const versementDate = new Date(v.dateVersement);
-    return versementDate.getMonth() === currentMonth && versementDate.getFullYear() === currentYear;
+    return versementDate.getMonth() === currentMonth && versementDate.getFullYear() === currentYear && v.type !== 'revenu';
   });
 
-  const versementsTotal = versementsThisMonth.reduce((sum, v) => sum + parseFloat(v.montant), 0);
+  const depensesTotal = depensesThisMonth.reduce((sum, v) => sum + parseFloat(v.montant), 0);
+  const depensesNet = depensesTotal - revenusTotal;
 
-  const versementsStats = {
-    total: versementsTotal,
+  const depensesStats = {
+    total: depensesNet,
     trend: {
       value: 12,
       isPositive: true
@@ -82,8 +85,8 @@ function calculateStats(vehicules, chauffeurs, affectations, versements) {
   return {
     vehicules: vehiclesStats,
     chauffeurs: chauffeursStats,
-    affectations: affectationsStats,
-    versements: versementsStats
+    revenus: revenusStats,
+    depenses: depensesStats
   };
 }
 
@@ -143,8 +146,11 @@ function calculateExpenses(versements) {
 
   const expensesByType = currentMonthVersements.reduce((acc, v) => {
     const type = v.type || 'Autres';
-    if (!acc[type]) acc[type] = 0;
-    acc[type] += parseFloat(v.montant);
+    // Exclure les revenus du graphique en doughnut
+    if (type !== 'revenu') {
+      if (!acc[type]) acc[type] = 0;
+      acc[type] += parseFloat(v.montant);
+    }
     return acc;
   }, {});
 
@@ -308,10 +314,10 @@ function updateStatCards(stats) {
   const statData = [
     { value: stats.vehicules.total, trend: stats.vehicules.trend },
     { value: stats.chauffeurs.total, trend: stats.chauffeurs.trend },
-    { value: stats.affectations.total, trend: stats.affectations.trend },
+    { value: stats.revenus.total, trend: stats.revenus.trend },
     {
-      value: (stats.versements.total / 1000).toFixed(1) + 'M',
-      trend: stats.versements.trend
+      value: Math.abs(stats.depenses.total).toLocaleString('fr-FR'),
+      trend: stats.depenses.trend
     }
   ];
 

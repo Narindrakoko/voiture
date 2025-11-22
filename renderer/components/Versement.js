@@ -86,6 +86,17 @@ export function Versement() {
             <p class="stat-label">Ce mois</p>
           </div>
         </div>
+
+        <div class="stat-card" id="stat-depense">
+          <div class="stat-icon">
+            <i class="fas fa-minus-circle"></i>
+          </div>
+          <div class="stat-info">
+            <h4>Dépenses</h4>
+            <p class="stat-value" id="stat-depense-value">0 Ar</p>
+            <p class="stat-label">Ce mois</p>
+          </div>
+        </div>
       </div>
 
       <!-- Formulaire de versement -->
@@ -259,6 +270,10 @@ export function Versement() {
 
         .stat-card:nth-child(5) .stat-icon {
           background: linear-gradient(135deg, #6f42c1, #5a32a3);
+        }
+
+        .stat-card:nth-child(6) .stat-icon {
+          background: linear-gradient(135deg, #dc3545, #bd2130);
         }
 
         .stat-info h4 {

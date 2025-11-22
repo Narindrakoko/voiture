@@ -63,7 +63,7 @@ export function Dashboard() {
             <i class="fas fa-exchange-alt"></i>
           </div>
           <div class="stat-info">
-            <h4>Affectations</h4>
+            <h4>Revenus</h4>
             <div class="stat-numbers">
               <p class="stat-value">45</p>
               <span class="stat-trend negative">
@@ -82,7 +82,7 @@ export function Dashboard() {
           <div class="stat-info">
             <h4>Dépenses</h4>
             <div class="stat-numbers">
-              <p class="stat-value">2.5M</p>
+              <p class="stat-value">2.5</p>
               <span class="stat-trend positive">
                 <i class="fas fa-arrow-up"></i>
                 +12%
@@ -288,7 +288,7 @@ export function Dashboard() {
         }
 
         .stat-card:nth-child(3) .stat-icon {
-          background: linear-gradient(135deg, #ffc107, #d39e00);
+          background: linear-gradient(135deg, #28a745, #1e7e34);
         }
 
         .stat-card:nth-child(4) .stat-icon {
@@ -335,6 +335,13 @@ export function Dashboard() {
           border-radius: var(--radius);
           padding: 20px;
           box-shadow: var(--shadow);
+          min-height: 350px;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .chart-container canvas {
+          flex: 1;
         }
 
         .chart-header {
