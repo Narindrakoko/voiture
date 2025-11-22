@@ -1,7 +1,7 @@
 //LoginFunction//
 
 
-export function initLogin() {
+export async function initLogin() {
 
     console.log("✅ initLogin() chargé");
 
@@ -11,22 +11,54 @@ export function initLogin() {
     const loginForm = document.getElementById("loginForm");
     const registerForm = document.getElementById("registerForm");
 
-    // Onglets
-    tabLogin.onclick = () => {
-      console.log("➡️ Onglet Connexion");
-      tabLogin.classList.add("active");
-      tabRegister.classList.remove("active");
-      loginForm.classList.add("active");
-      registerForm.classList.remove("active");
-    };
+    // Vérifier le nombre d'utilisateurs
+    try {
+        const res = await fetch("http://localhost:3000/api/utilisateur");
+        const users = await res.json();
+        console.log("Nombre d'utilisateurs:", users.length);
 
-    tabRegister.onclick = () => {
-      console.log("➡️ Onglet Inscription");
-      tabRegister.classList.add("active");
-      tabLogin.classList.remove("active");
-      registerForm.classList.add("active");
-      loginForm.classList.remove("active");
-    };
+        if (users.length === 1) {
+            // Masquer l'onglet inscription et le remplacer par "Mot de passe oublié"
+            tabRegister.textContent = "Mot de passe oublié";
+            tabRegister.onclick = () => alert("Fonctionnalité à venir");
+            registerForm.style.display = 'none';
+        } else {
+            // Onglets normaux
+            tabLogin.onclick = () => {
+                console.log("➡️ Onglet Connexion");
+                tabLogin.classList.add("active");
+                tabRegister.classList.remove("active");
+                loginForm.classList.add("active");
+                registerForm.classList.remove("active");
+            };
+
+            tabRegister.onclick = () => {
+                console.log("➡️ Onglet Inscription");
+                tabRegister.classList.add("active");
+                tabLogin.classList.remove("active");
+                registerForm.classList.add("active");
+                loginForm.classList.remove("active");
+            };
+        }
+    } catch (err) {
+        console.error("❌ Erreur fetch utilisateurs:", err);
+        // En cas d'erreur, afficher les onglets normaux
+        tabLogin.onclick = () => {
+            console.log("➡️ Onglet Connexion");
+            tabLogin.classList.add("active");
+            tabRegister.classList.remove("active");
+            loginForm.classList.add("active");
+            registerForm.classList.remove("active");
+        };
+
+        tabRegister.onclick = () => {
+            console.log("➡️ Onglet Inscription");
+            tabRegister.classList.add("active");
+            tabLogin.classList.remove("active");
+            registerForm.classList.add("active");
+            loginForm.classList.remove("active");
+        };
+    }
 
     // Affichage mot de passe
     document.querySelectorAll(".togglePass").forEach(icon => {
@@ -98,7 +130,15 @@ export function initLogin() {
         }
 
         alert("Compte créé !");
-        tabLogin.click();
+        if (tabLogin.onclick) {
+            tabLogin.onclick();
+        } else {
+            // Fallback si onclick n'est pas défini
+            tabLogin.classList.add("active");
+            tabRegister.classList.remove("active");
+            loginForm.classList.add("active");
+            registerForm.classList.remove("active");
+        }
 
       } catch (err) {
         console.error("❌ Erreur fetch inscription:", err);
