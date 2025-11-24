@@ -74,10 +74,9 @@ function calculateStats(vehicules, chauffeurs, affectations, versements) {
   });
 
   const depensesTotal = depensesThisMonth.reduce((sum, v) => sum + parseFloat(v.montant), 0);
-  const depensesNet = depensesTotal - revenusTotal;
 
   const depensesStats = {
-    total: depensesNet,
+    total: depensesTotal,
     trend: {
       value: 12,
       isPositive: true

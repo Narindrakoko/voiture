@@ -1,5 +1,3 @@
-//HistoriqueFunction.js//
-
 // renderer/components/historiqueFunctions.js
 
 // ======================
@@ -429,41 +427,6 @@ window.viewActivity = function (id, type) {
       return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
     }
   };
-
-
-  window.printActivity = function(id, type) {
-    const activity = allActivities.find(a => a.id === id && a.type === type);
-    if (!activity) return;
-
-    // 🔹 Étape 1 : Demande de confirmation
-    const confirmation = confirm(`Voulez-vous vraiment exporter cette activité (${capitalize(activity.type)}) en PDF ?`);
-    if (!confirmation) {
-      showNotification("Exportation annulée", "warning");
-      return;
-    }
-
-    // 🔹 Étape 2 : Accès à jsPDF depuis le CDN
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    doc.setFontSize(16);
-    doc.text("Détails de l'activité", 20, 20);
-
-    doc.setFontSize(12);
-    doc.text(`Date : ${formatDate(activity.date)}`, 20, 40);
-    doc.text(`Heure : ${activity.heure || "—"}`, 20, 50);
-    doc.text(`Type : ${capitalize(activity.type)}`, 20, 60);
-    doc.text(`Véhicule : ${activity.vehicule}`, 20, 70);
-    doc.text(`Chauffeur : ${activity.chauffeur}`, 20, 80);
-    doc.text(`Description : ${activity.description}`, 20, 90);
-    doc.text(`Statut : ${capitalize(activity.statut)}`, 20, 100);
-
-    doc.save(`activite_${activity.id}.pdf`);
-
-    // 🔹 Étape 3 : Notification visuelle
-    showNotification("PDF exporté avec succès !");
-  };
-
 
 // ======================
 // Notifications

@@ -91,7 +91,11 @@ async function loadStats() {
 
     versementsThisMonth.forEach(v => {
       const montant = parseFloat(v.montant);
-      stats.total += montant;
+      if (v.type === 'revenu') {
+        stats.revenus += montant;
+      } else {
+        stats.total += montant;
+      }
       if (v.type === 'maintenance') {
         stats.maintenance += montant;
       } else if (v.type === 'carburant') {
@@ -101,8 +105,11 @@ async function loadStats() {
       }
     });
 
+    // Show total as expenses (total - revenus)
+    const depensesTotal = stats.total;
+
     document.getElementById('stat-total-value').textContent =
-      `${parseFloat(stats.total || 0).toLocaleString('fr-FR')} Ar`;
+      `${parseFloat(depensesTotal || 0).toLocaleString('fr-FR')} Ar`;
     document.getElementById('stat-carburant-value').textContent =
       `${parseFloat(stats.carburant || 0).toLocaleString('fr-FR')} Ar`;
     document.getElementById('stat-maintenance-value').textContent =
@@ -112,8 +119,8 @@ async function loadStats() {
 
     // Calculer les dépenses (total - revenus)
     const depenses = stats.total - (stats.revenus || 0);
-    document.getElementById('stat-depense-value').textContent =
-      `${parseFloat(depenses || 0).toLocaleString('fr-FR')} Ar`;
+    // document.getElementById('stat-depense-value').textContent =
+    //   `${parseFloat(depenses || 0).toLocaleString('fr-FR')} Ar`;
   } catch (error) {
     console.error('Erreur lors du chargement des statistiques:', error);
   }

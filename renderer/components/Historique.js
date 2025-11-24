@@ -1,5 +1,3 @@
-//Historique.js//
-
 import { initHistorique } from "./HistoriqueFunctions.js";
 
 export function Historique() {
@@ -14,6 +12,7 @@ export function Historique() {
         <div class="header-controls">
           <div class="filters">
             <div class="search-box">
+              <i class="fas fa-search"></i>
               <input type="text" id="searchHistorique" placeholder="Rechercher...">
             </div>
             <div class="date-filter">
