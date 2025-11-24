@@ -1,5 +1,7 @@
 const API_BASE = 'http://localhost:3000/api';
 let charts = {};
+let eventListenersAdded = false;
+let resizeHandler = null;
 
 // Fonction pour charger les données
 async function loadDashboardData(period = 'month') {
@@ -440,38 +442,78 @@ function updateAlerts(alerts) {
   }
 }
 
-// Fonction d'initialisation
+function cleanupDashboard() {
+  // Destroy charts if they exist
+  if (charts.vehicleUsage) {
+    charts.vehicleUsage.destroy();
+    charts.vehicleUsage = null;
+  }
+  if (charts.expenses) {
+    charts.expenses.destroy();
+    charts.expenses = null;
+  }
+  charts = {};
+
+  // Remove event listeners if added
+  if (eventListenersAdded) {
+    const periodButtons = document.querySelectorAll('.period-selector button');
+    periodButtons.forEach(button => {
+      button.replaceWith(button.cloneNode(true)); // Removes all event listeners
+    });
+
+    const refreshBtn = document.getElementById('btnRefresh');
+    if (refreshBtn) {
+      refreshBtn.replaceWith(refreshBtn.cloneNode(true)); // Removes all event listeners
+    }
+
+    if (resizeHandler) {
+      window.removeEventListener('resize', resizeHandler);
+      resizeHandler = null;
+    }
+
+    eventListenersAdded = false;
+  }
+}
+
 function initDashboard() {
+  // Cleanup first to avoid duplicates
+  cleanupDashboard();
+
   // Charger les données initiales
   loadDashboardData('month');
 
   // Event listeners pour les boutons de période
-  const periodButtons = document.querySelectorAll('.period-selector button');
-  periodButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      periodButtons.forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
-      loadDashboardData(button.dataset.period);
+  if (!eventListenersAdded) {
+    const periodButtons = document.querySelectorAll('.period-selector button');
+    periodButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        periodButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        loadDashboardData(button.dataset.period);
+      });
     });
-  });
 
-  // Event listener pour le bouton de rafraîchissement
-  const refreshBtn = document.getElementById('btnRefresh');
-  if (refreshBtn) {
-    refreshBtn.addEventListener('click', () => {
-      refreshBtn.classList.add('rotating');
-      loadDashboardData(document.querySelector('.period-selector button.active').dataset.period);
-      setTimeout(() => refreshBtn.classList.remove('rotating'), 1000);
-    });
-  }
-
-  // Ajouter un gestionnaire de redimensionnement pour les graphiques
-  window.addEventListener('resize', () => {
-    if (charts.vehicleUsage && charts.expenses) {
-      charts.vehicleUsage.resize();
-      charts.expenses.resize();
+    // Event listener pour le bouton de rafraîchissement
+    const refreshBtn = document.getElementById('btnRefresh');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', () => {
+        refreshBtn.classList.add('rotating');
+        loadDashboardData(document.querySelector('.period-selector button.active').dataset.period);
+        setTimeout(() => refreshBtn.classList.remove('rotating'), 1000);
+      });
     }
-  });
+
+    // Ajouter un gestionnaire de redimensionnement pour les graphiques
+    resizeHandler = () => {
+      if (charts.vehicleUsage && charts.expenses) {
+        charts.vehicleUsage.resize();
+        charts.expenses.resize();
+      }
+    };
+    window.addEventListener('resize', resizeHandler);
+
+    eventListenersAdded = true;
+  }
 }
 
 export { initDashboard };
