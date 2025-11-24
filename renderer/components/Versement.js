@@ -12,7 +12,6 @@ export function Versement() {
         <div class="header-controls">
           <div class="filters">
             <div class="search-box">
-              <i class="fas fa-search"></i>
               <input type="text" id="searchVersement" placeholder="Rechercher un versement...">
             </div>
             <select id="filterType" class="form-control">
@@ -37,7 +36,7 @@ export function Versement() {
             <i class="fas fa-money-bill-wave"></i>
           </div>
           <div class="stat-info">
-            <h4>Total Versements</h4>
+            <h4>Dépenses Totale</h4>
             <p class="stat-value" id="stat-total-value">0 Ar</p>
             <p class="stat-label">Ce mois</p>
           </div>
@@ -87,7 +86,7 @@ export function Versement() {
           </div>
         </div>
 
-        <div class="stat-card" id="stat-depense">
+     <!--   <div class="stat-card" id="stat-depense">
           <div class="stat-icon">
             <i class="fas fa-minus-circle"></i>
           </div>
@@ -96,7 +95,7 @@ export function Versement() {
             <p class="stat-value" id="stat-depense-value">0 Ar</p>
             <p class="stat-label">Ce mois</p>
           </div>
-        </div>
+        </div>-->
       </div>
 
       <!-- Formulaire de versement -->

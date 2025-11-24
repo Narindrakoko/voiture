@@ -12,7 +12,6 @@ export function Maintenance() {
         <div class="header-controls">
           <div class="filters">
             <div class="search-box">
-              <i class="fas fa-search"></i>
               <input type="text" id="searchMaintenance" placeholder="Rechercher une maintenance...">
             </div>
             <select id="filterStatut" class="form-control">
